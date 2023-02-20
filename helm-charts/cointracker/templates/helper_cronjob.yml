@@ -1,0 +1,39 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Values.helper.name }}
+spec:
+  schedule: '0 */6 * * *'
+  successfulJobsHistoryLimit: 0
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: {{ .Values.helper.name }}
+          containers:
+            - command:
+                - /bin/sh
+                - -c
+                - |-
+                  TOKEN=`aws ecr get-login-password --region ${REGION}`
+                  kubectl -n $NAMESPACE delete secret $SECRET_NAME --ignore-not-found
+                  kubectl -n $NAMESPACE create secret docker-registry $SECRET_NAME \
+                  --docker-server=$ECR_REPOSITORY \
+                  --docker-username=AWS \
+                  --docker-password=$TOKEN
+                  kubectl -n $NAMESPACE patch serviceaccount $SA_NAME -p '{"imagePullSecrets":[{"name":"'$SECRET_NAME'"}]}'
+              env:
+                - name: SECRET_NAME
+                  value: {{ .Values.helper.secret_name }}
+                - name: REGION
+                  value: {{ .Values.aws.region }}
+                - name: ECR_REPOSITORY
+                  value: {{ .Values.image.repository }}
+                - name: NAMESPACE
+                  value: {{ .Release.Namespace }}
+                - name: SA_NAME
+                  value: {{ .Values.helper.serviceaccount_name }}
+              image: {{ .Values.helper.image }}
+              imagePullPolicy: IfNotPresent
+              name: ecr-token-helper
+          restartPolicy: Never

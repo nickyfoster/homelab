@@ -1,0 +1,37 @@
+---
+# tasks file for docker_compose
+
+- name: Ensure directory is present
+  ansible.builtin.file:
+    path: "{{ compose_dir }}"
+    state: directory
+
+- name: Download Docker compose
+  ansible.builtin.get_url:
+    url: "{{ compose_url }}"
+    dest: "{{ compose_dir }}/{{ bin_name }}-{{ version }}"
+    force: "{{ do_force_download }}"
+    use_proxy: "{{ use_proxy }}"
+    validate_certs: "{{ do_validate_certs }}"
+    timeout: "{{ download_timeout }}"
+    mode: "{{ download_mode }}"
+
+- name: Check that bin-file was downloaded successfully
+  ansible.builtin.stat:
+    path: "{{ compose_dir }}/{{ bin_name }}-{{ version }}"
+    checksum_algorithm: sha256
+  register: remote_compose_file
+  ignore_errors: true
+
+- name: Assert bin-file file matches checksum
+  ansible.builtin.assert:
+    that:
+      - remote_compose_file.stat.checksum == compose_sha
+    msg: "Checksum failed: {{ remote_compose_file.stat.checksum }} != {{ compose_sha }}"
+  when: remote_compose_file.stat.exists
+
+- name: Create symbolic link
+  community.general.alternatives:
+    name: "{{ bin_name }}"
+    link: "/usr/local/bin/{{ bin_name }}"
+    path: "{{ compose_dir }}/{{ bin_name }}-{{ version }}"

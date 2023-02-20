@@ -1,0 +1,153 @@
+master:
+# adminUser: "admin"
+# adminPassword: "{{ jenkins_admin_password }}"
+  tag: "{{ jenkins_master_image_tag }}"
+  imagePullPolicy: "IfNotPresent"
+  resources:
+    requests:
+      cpu: "{{ jenkins_req_cpu }}"
+      memory: "{{ jenkins_req_mem }}"
+    limits:
+      cpu: "{{ jenkins_lim_cpu }}"
+      memory: "{{ jenkins_lim_mem }}"
+
+  javaOpts: "-Xmx4g -Xms4g"
+
+  installPlugins: {{ jenkins_install_plugins }}
+
+  # List of plugins to install in addition to those listed in master.installPlugins
+  additionalPlugins: {{ jenkins_additional_plugins }}
+
+  overwriteConfig: true
+  initializeOnce: false
+
+  # List of groovy init scripts to be executed during Jenkins master start
+  initScripts:
+    - |
+      {% filter indent(width=6) %}{% include 'init0-cloud-config.groovy.j2' %}{% endfilter %}
+
+  # https://github.com/jenkinsci/configuration-as-code-plugin/tree/master/demos
+  JCasC:
+    enabled: true
+    defaultConfig: false
+    configScripts:
+      main-settings: |
+        jenkins:
+          crumbIssuer:
+            standard:
+              excludeClientIPFromCrumb: true
+          disableRememberMe: false
+          labelAtoms:
+          - name: "master"
+          markupFormatter: "plainText"
+          mode: NORMAL
+          myViewsTabBar: "standard"
+          numExecutors: 0
+          noUsageStatistics: true
+          primaryView:
+            all:
+              name: "all"
+          projectNamingStrategy: "standard"
+          quietPeriod: 5
+          remotingSecurity:
+            enabled: true
+          scmCheckoutRetryCount: 10
+          slaveAgentPort: 50000
+          updateCenter:
+            sites:
+            - id: "default"
+              url: "https://updates.jenkins.io/update-center.json"
+          views:
+          - all:
+              name: "all"
+          viewsTabBar: "standard"
+          clouds:
+          - kubernetes:
+              name: "kubernetes"
+              namespace: "{{ jenkins_namespace }}"
+              containerCapStr: "{{ jenkins_max_agents }}"
+              maxRequestsPerHostStr: 32
+              jenkinsTunnel: "jenkins-agent:50000"
+              jenkinsUrl: "http://jenkins:8080"
+              serverUrl: "https://kubernetes.default"
+              podLabels:
+              - key: "jenkins/jenkins-jenkins-slave"
+                value: "true"
+              templates:
+              - name: "agent"
+                label: "{{ jenkins_agent_node_name }}"
+                activeDeadlineSeconds: 10000
+                slaveConnectTimeout: 150
+                idleMinutes: 0
+                nodeUsageMode: NORMAL
+                podRetention: "never"
+                serviceAccount: "default"
+                yamlMergeStrategy: "override"
+                imagePullSecrets:
+                - name: "docker-registry-secret"
+                containers:
+                - args: "^${computer.jnlpmac} ^${computer.name}"
+                  envVars:
+                  - containerEnvVar:
+                      key: "JENKINS_URL"
+                      value: "http://jenkins.{{ jenkins_namespace }}.svc.cluster.local:8080"
+                  image: "{{ jenkins_docker_registry_host }}/jenkins-agent:{{ jenkins_agent_image_tag }}"
+                  name: "jnlp"
+                  resourceRequestCpu: "250m"
+                  resourceLimitCpu: "500m"
+                  resourceRequestMemory: "300Mi"
+                  resourceLimitMemory: "300Mi"
+                  workingDir: "/home/jenkins"
+
+      security-settings: |
+        security:
+          apiToken:
+            usageStatisticsEnabled: false
+          scriptApproval:
+            approvedSignatures: {{ jenkins_approved_signatures }}
+
+      other-settings: |
+        unclassified:
+          location:
+            adminAddress: "address not configured yet <nobody@nowhere>"
+            url: "{{ jenkins_base_url }}"
+          globalDefaultFlowDurabilityLevel:
+            durabilityHint: PERFORMANCE_OPTIMIZED
+          prometheusConfiguration:
+            collectingMetricsPeriodInSeconds: 30
+
+
+  # Expose Prometheus metrics
+  prometheus:
+    enabled: true
+    serviceMonitorNamespace: "{{ jenkins_namespace }}"
+    serviceMonitorAdditionalLabels:
+      release: prometheus-operator
+    scrapeInterval: 30s
+    scrapeEndpoint: /prometheus
+
+  # Can be used to disable rendering master test resources when using helm template
+  testEnabled: true
+
+
+persistence:
+  enabled: true
+  ## If defined, PVC must be created manually before volume will be bound
+  # existingClaim:
+  size: "12Gi"
+
+
+networkPolicy:
+  # Enable creation of NetworkPolicy resources.
+  enabled: false
+  apiVersion: networking.k8s.io/v1
+  # You can allow agents to connect from both within the cluster (from within specific/all namespaces) AND/OR from a given external IP range
+  internalAgents:
+    allowed: true
+    podLabels: {}
+    namespaceLabels: {}
+      # project: myproject
+  externalAgents: {}
+  #   ipCIDR: 172.17.0.0/16
+  #   except:
+  #     - 172.17.1.0/24

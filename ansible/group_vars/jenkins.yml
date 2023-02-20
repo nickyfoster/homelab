@@ -1,0 +1,28 @@
+## General parameters:
+domain_suffix: "mrf0str.com"
+
+## AWS parameters
+eks_name: "eks"
+
+## Jenkins parameters
+jenkins_base_url: "https://{{ jenkins_namespace }}.{{ domain_suffix }}"
+jenkins_master_image_tag: "2.377"
+jenkins_admin_password: "CHANGEME"
+jenkins_docker_registry_host: "CHANGEME"
+jenkins_agent_image_tag: "2"
+jenkins_agent_node_name: "node01"
+
+jenkins_req_cpu: "1000m"
+jenkins_req_mem: "10Gi"
+jenkins_lim_cpu: "2000m"
+jenkins_lim_mem: "10Gi"
+
+jenkins_install_plugins:
+  - kubernetes:1.56.2
+
+jenkins_additional_plugins:
+  - ace-editor:3.0
+
+jenkins_approved_signatures:
+  - "method java.lang.Class isInstance java.lang.Object"
+

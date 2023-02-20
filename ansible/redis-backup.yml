@@ -1,0 +1,46 @@
+# config cron job
+# 0 0 * * * python3 /home/ubuntu/dump_redis.py
+
+---
+- name: Redis backup job
+  hosts: redis
+  gather_facts: false
+  vars:
+    dir_name: ~/redis-backup
+    backup_script: dump_redis_db.py
+    url: https://raw.githubusercontent.com/p/redis-dump-load/master/redisdl.py
+    cron_name: redis_backup
+    python_packages:
+      - boto3
+      - redis
+
+  tasks:
+  - name: Ensure python packages present
+    ansible.builtin.pip:
+      name: "{{ item }}"
+    loop: "{{ python_packages }}"
+
+  - name: Create directory 
+    file:
+      path: "{{ dir_name }}"
+      state: directory
+
+  - name: Copy backup script
+    copy:
+      src: "{{ backup_script }}"
+      dest: "{{ dir_name }}"
+
+  - name: Download python file from internet to remote machine
+    get_url:
+      url: "{{ url }}"
+      dest: "{{ dir_name }}"
+
+  - name: Create cron job
+    cron:
+      name: "{{ cron_name }}"
+      job: "python3 {{ dir_name }}/{{ backup_script }}"
+      minute: 0
+      hour: 0
+
+  - name: Test if cron job is working
+    shell: "crontab -l | grep {{ cron_name }}"

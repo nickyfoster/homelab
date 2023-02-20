@@ -1,0 +1,20 @@
+roles:
+  - src: https://github.com/nickyfoster/ansible-docker
+    scm: git
+    version: main
+    name: docker
+
+  - src: https://github.com/nickyfoster/ansible-docker-compose
+    scm: git
+    version: main
+    name: docker-compose
+    
+  - src: https://github.com/geerlingguy/ansible-role-redis
+    scm: git
+    version: master
+    name: redis
+
+  - src: https://github.com/geerlingguy/ansible-role-containerd
+    scm: git
+    version: master
+    name: containerd

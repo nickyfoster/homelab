@@ -1,0 +1,5 @@
+## EC2 host parameters
+packages_to_install:
+  - python3-pip
+  - unzip
+  - net-tools

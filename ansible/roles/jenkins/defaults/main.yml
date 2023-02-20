@@ -1,0 +1,12 @@
+---
+jenkins_chart_version: "4.2.17"
+jenkins_namespace: "jenkins"
+jenkins_endpoint_domain_name: "example.com"
+jenkins_endpoint_host_name: "{{ jenkins_namespace }}"
+jenkins_master_image_tag: "lts"
+jenkins_agent_image_tag: "latest"
+jenkins_max_agents: "10"
+
+jenkins_ecr_username: "CHANGEME"
+jenkins_ecr_password: "CHANGEME"
+jenkins_ecr_host: "CHANGEME"

@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cointracker-config
+data:
+  config.yml: |-
+    db:
+      host: redis.mrf0str-private.com
+      port: 6379
+      db: 0
+
+    coinmarketcap:
+      api_key: CHANGE_ME_TO_VAULT_VALUE
+
+    telegram:
+      api_key: CHANGE_ME_TO_VAULT_VALUE
+
+

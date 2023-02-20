@@ -1,0 +1,58 @@
+---
+
+- include: "setup-{{ ansible_os_family }}.yml"
+
+- name: Install docker package
+  package:
+    name: docker-ce
+    state: present
+    update_cache: yes
+  notify: restart docker
+
+- name: Install docker sdk pip package
+  pip:
+    name: docker<=4.4.4
+    executable: pip3
+  
+- name: Install websocket-client package
+  pip:
+    name: websocket-client==0.58.0
+    executable: pip3
+
+- name: Ensure docker config directory is exists
+  file:
+    path: /etc/docker
+    state: directory
+    owner: root
+    group: root
+  when: docker_config | length
+
+- name: Configure docker daemon
+  copy:
+    dest: /etc/docker/daemon.json
+    owner: root
+    group: root
+    content: "{{ docker_config | to_nice_json }}"
+  notify: restart docker
+  when: docker_config | length
+
+- name: Enable docker.service
+  service:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: Ensure group "docker" exists
+  ansible.builtin.group:
+    name: docker
+    state: present
+
+- name: Add user to docker group
+  ansible.builtin.user:
+    name: "{{ host_user }}"
+    groups: docker
+    append: yes
+
+- name: reset ssh connection to allow user changes to affect ansible user
+  ansible.builtin.meta:
+    reset_connection

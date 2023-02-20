@@ -1,0 +1,25 @@
+---
+- hosts: all
+  tasks:
+    - name: Install packages
+      apt:
+        pkg: "{{ packages_to_install }}"
+
+    - import_role:
+        name: docker
+
+    - import_role:
+        name: docker-compose
+
+    - name: Download the awscli exe
+      get_url: url=https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip dest=/tmp/awscli-exe.zip
+      register: aws_cli_download_exe
+
+    - name: Unarchive the installer
+      unarchive: src=/tmp/awscli-exe.zip dest=/tmp copy=no
+      when: aws_cli_download_exe.changed
+      register: aws_cli_unarchive_installer
+
+    - name: Install awscli package
+      shell: /tmp/aws/install
+      when: aws_cli_unarchive_installer.changed

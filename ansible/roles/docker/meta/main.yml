@@ -1,0 +1,23 @@
+galaxy_info:
+  role_name: docker
+  author: Nikita Guliaev
+  namespace: mrf0str
+  description: Ansible role for Docker installation
+  license: license (GPL-2.0-or-later, MIT, etc)
+
+  min_ansible_version: 2.1
+
+  platforms:
+  - name: Debian
+    versions:
+    - all
+  - name: Ubuntu
+    versions:
+    - all
+
+  galaxy_tags:
+    - debian
+    - ubuntu
+    - docker
+
+dependencies: []

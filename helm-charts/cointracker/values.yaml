@@ -1,0 +1,70 @@
+# Default values for cointracker.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: 381171443050.dkr.ecr.us-east-2.amazonaws.com/cointracker
+  pullPolicy: Always
+  tag: latest
+
+imagePullSecrets:
+  - name: aws-ecr-secret
+nameOverride: ""
+fullnameOverride: ""
+
+volumes:
+  - name: config
+    configMap:
+      name: cointracker-config
+
+volumeMounts:
+  - name: config
+    mountPath: /etc/cointracker/
+    readOnly: true
+
+# serviceAccountName: 
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 500m
+    memory: 512Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+aws:
+  region: us-east-2
+
+helper:
+  name: ecr-token-helper
+  serviceaccount_name: default
+  image: gtsopour/awscli-kubectl
+  secret_name: ecr-secret

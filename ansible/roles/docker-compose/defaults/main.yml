@@ -1,0 +1,26 @@
+---
+# defaults file for docker_compose
+
+# Docker-compose bin options
+compose_arch: x86_64
+version: v2.14.2
+os_type: linux
+
+# Download params
+base_url: https://github.com/docker/compose/releases/download
+compose_dir: /opt/docker-compose
+bin_name: docker-compose
+
+# Download options
+compose_url: "{{ base_url }}/{{ version }}/{{ bin_name }}-{{ os_type }}-{{ compose_arch }}"
+download_timeout: 10
+download_mode: 'u=rwx,go=rx'
+do_force_download: no
+do_validate_certs: no
+use_proxy: yes
+
+# Install dependent role (ansible-docker)
+configure_docker: no
+
+# Bin SHA
+compose_sha: d056a8330a01f22c249b9fa03ad0d5be889b79b648cad43c8549eb4c3f8ff0ba

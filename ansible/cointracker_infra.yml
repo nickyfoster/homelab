@@ -1,0 +1,3 @@
+- ansible.builtin.import_playbook: ec2_host.yml
+- ansible.builtin.import_playbook: redis.yml
+- ansible.builtin.import_playbook: cointracker_backup.yml

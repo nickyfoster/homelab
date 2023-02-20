@@ -1,0 +1,17 @@
+---
+
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+  - name: Get compose version
+    command: "docker-compose -v"
+    register: actual_compose_version
+    changed_when: actual_compose_version.rc
+
+  - name: Print compose version
+    debug: var=actual_compose_version.stdout
+
+  - ansible.builtin.assert:
+      that:
+        - "'Docker Compose version' in actual_compose_version.stdout"

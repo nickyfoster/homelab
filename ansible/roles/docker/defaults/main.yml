@@ -1,0 +1,12 @@
+---
+# OS params
+host_user: ubnutu
+
+# Docker params
+docker_repo_base_url: https://download.docker.com/linux
+
+docker_config:
+  log-driver: json-file
+  log-opts:
+    max-size: "100m"
+    max-file: "10"

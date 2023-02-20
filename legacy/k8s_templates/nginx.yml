@@ -1,0 +1,40 @@
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: test-pvc
+  namespace: default
+spec:
+  accessModes:
+    - "ReadWriteOnce"
+  resources:
+    requests:
+      storage: "8Gi"
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: rnginx
+  namespace: default
+spec:
+  serviceName: nginx
+  replicas: 5
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: registry.k8s.io/nginx-slim:0.8
+          volumeMounts:
+            - mountPath: /opt
+              name: pers-data
+              readOnly: false
+      volumes:
+      - name: pers-data
+        persistentVolumeClaim:
+          claimName: test-pvc

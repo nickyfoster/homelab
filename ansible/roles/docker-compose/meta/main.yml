@@ -1,0 +1,25 @@
+galaxy_info:
+  role_name: docker_compose
+  author: Nikita Guliaev
+  namespace: mrf0str
+  description: Ansible role for docker-compose installation
+  license: license (GPL-2.0-or-later, MIT, etc)
+
+  min_ansible_version: 2.1
+
+  platforms:
+  - name: Debian
+    versions:
+    - all
+  - name: Ubuntu
+    versions:
+    - all
+
+  galaxy_tags:
+    - debian
+    - ubuntu
+    - docker
+    - docker-compose
+
+
+dependencies: []

@@ -1,0 +1,11 @@
+- name: Debian. Ensure that APT works with the https method
+  apt: name={{ item }} state=present
+  with_items:
+    - apt-transport-https
+    - ca-certificates
+
+- name: Debian. Install docker GPG key
+  apt_key: url=https://download.docker.com/linux/debian/gpg state=present
+
+- name: Debian. Add docker apt repository
+  apt_repository: repo="deb {{ docker_repo_base_url }}/{{ ansible_distribution|lower }} {{ ansible_distribution_release }} stable" state=present
