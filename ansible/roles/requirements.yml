@@ -18,3 +18,8 @@ roles:
     scm: git
     version: master
     name: containerd
+
+  - src: https://github.com/githubixx/ansible-role-wireguard
+    scm: git
+    version: master
+    name: wireguard

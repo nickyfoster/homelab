@@ -1,0 +1,25 @@
+- hosts: bastion
+  become: yes
+  vars:
+  tasks:
+
+    # https://github.com/StreisandEffect/streisand/issues/1434
+    - name: Install openresolv package
+      ansible.builtin.apt:
+        name: openresolv
+
+    - ansible.builtin.import_role:
+        name: wireguard
+      vars:
+        packages: "{{ packages + [ 'openresolv' ] }}"
+        wireguard_dns: 8.8.8.8
+        wireguard_endpoint: vpn.mrf0str.com
+        wireguard_address: "10.10.210.0/24"
+        wireguard_preup:
+          - echo 1 > /proc/sys/net/ipv4/ip_forward
+        wireguard_postup:
+        - iptables -t nat -A POSTROUTING -o ens5 -j MASQUERADE
+        - iptables -A FORWARD -i %i -j ACCEPT
+        - iptables -A FORWARD -o %i -j ACCEPT
+
+  # https://github.com/angristan/wireguard-install

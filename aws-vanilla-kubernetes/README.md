@@ -1,3 +1,3 @@
-Kubernetes The Hard Way challenge
+# Kubernetes The Hard Way challenge
 
 This is for learning purpose.
