@@ -9,7 +9,7 @@ ec2_iam_default_profile_statements = [
     name      = "default"
     effect    = "Deny"
     resources = ["*"]
-    actions   = [""]
+    actions   = ["*"]
   }
 ]
 
@@ -65,5 +65,5 @@ private_hosts = [
         effect = "Allow"
       }
     ]
-  },
+  }
 ]
