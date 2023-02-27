@@ -2,13 +2,15 @@ import logging
 import os
 
 import boto3
+import argparse
 import redisdl
 from botocore.credentials import InstanceMetadataProvider, InstanceMetadataFetcher
 from botocore.exceptions import ClientError
+import sys
 
 redis_host = "127.0.0.1"
 bucket_name = "redis-backups-229"
-filename = f"{os.getcwd()}/redis-dump.rdb"
+filename = f"{os.getcwd()}/redis-dump-test.rdb"  # TODO changeme
 
 
 def upload_file(file_name, bucket, object_name=None):
@@ -37,5 +39,24 @@ def dump():
     upload_file(filename, bucket_name)
 
 
+def init():
+    parser = argparse.ArgumentParser(
+        prog='ProgramName',
+        description='What the program does',
+        epilog='Text at the bottom of help')
+
+    parser.add_argument('--action', type=str, required=True)  # Parse the argument
+    args = parser.parse_args()
+
+
+def main():
+    action = sys.argv[1]
+    if not action or action not in ["dump", "load"]:
+        print("Please, specify either ")
+
+    print(action)
+    # dump()
+
+
 if __name__ == '__main__':
-    dump()
+    main()
