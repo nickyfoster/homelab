@@ -1,6 +1,11 @@
 ---
 - hosts: all
   tasks:
+    - name: Update cache
+      ansible.builtin.apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
     - name: Install packages
       apt:
         pkg: "{{ packages_to_install }}"
@@ -23,3 +28,7 @@
     - name: Install awscli package
       shell: /tmp/aws/install
       when: aws_cli_unarchive_installer.changed
+
+    - name: Set hostname
+      ansible.builtin.hostname:
+        name: "{{ tags.Name }}"

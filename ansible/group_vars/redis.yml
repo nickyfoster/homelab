@@ -1,0 +1,11 @@
+redis_bind_interface: 0.0.0.0
+redis_backup_dir_name: ~/redis-backup
+redis_backup_script:
+  name: redis_helper.py
+  args: "--method dump"
+redis_backup_lib_url: https://raw.githubusercontent.com/p/redis-dump-load/master/redisdl.py
+redis_backup_cron_name: redis_backup
+redis_backup_logfile_name: "main.redis_helper.log"
+redis_host_python_packages:
+  - boto3
+  - redis

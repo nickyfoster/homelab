@@ -3,3 +3,5 @@ packages_to_install:
   - python3-pip
   - unzip
   - net-tools
+  - cron
+  - nano

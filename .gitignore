@@ -1,6 +1,7 @@
 # Ansible
 *.retry
 .vault_password_file
+venv
 
 ## Terraform
 # Local .terraform directories
@@ -42,3 +43,6 @@ terraform.rc
 
 # Temp
 tmp/*
+
+# IDEs
+.idea

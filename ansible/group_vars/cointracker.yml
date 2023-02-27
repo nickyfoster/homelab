@@ -2,12 +2,13 @@
 
 ## Cointracker General
 cointracker_config_path: /opt/cointracker/config.yml
+cointracker_config_dir: /opt/cointracker
 cointracker_do_preload_coin_data: no
 cointracker_preload_coin_data:
   btc: 1000
 
 ## Cointracker DB
-cointracker_redis_host: 127.0.0.1
+cointracker_redis_host: ip-172-31-1-57.us-east-2.compute.internal
 cointracker_redis_port: 6379
 cointracker_redis_db: 0
 cointracker_redis_password:

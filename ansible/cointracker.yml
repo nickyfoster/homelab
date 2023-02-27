@@ -19,6 +19,12 @@
         name: "{{ registry_url }}/{{ image_name }}:{{ image_tag}}"
         source: pull
 
+    - name: Ensure config dir exists
+      tags: config_template
+      ansible.builtin.file:
+        path: "{{ cointracker_config_dir }}"
+        state: directory
+
     - name: Touch config file
       tags: config_template
       ansible.builtin.file:

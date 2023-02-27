@@ -30,14 +30,12 @@ variable "ec2_iam_default_profile_statements" {
     name      = string
     resources = list(string)
     actions   = list(string)
+    effect    = string
+
   }))
 }
 
 variable "private_hosts" {
-
-}
-
-variable "_test_private_hosts" {
   type = list(object({
     name                   = string
     instance_type          = optional(string)
@@ -48,10 +46,10 @@ variable "_test_private_hosts" {
     vpc_security_group_ids = optional(list(string))
     volume_size            = optional(number)
     iam = optional(list(object({
-      name = string
+      name      = string
       resources = list(string)
       actions   = list(string)
+      effect    = string
     })))
   }))
 }
-

@@ -4,43 +4,40 @@
 ---
 - name: Redis backup job
   hosts: redis
-  gather_facts: false
-  vars:
-    dir_name: ~/redis-backup
-    backup_script: dump_redis_db.py
-    url: https://raw.githubusercontent.com/p/redis-dump-load/master/redisdl.py
-    cron_name: redis_backup
-    python_packages:
-      - boto3
-      - redis
-
   tasks:
   - name: Ensure python packages present
     ansible.builtin.pip:
       name: "{{ item }}"
-    loop: "{{ python_packages }}"
+    loop: "{{ redis_host_python_packages }}"
 
   - name: Create directory 
     file:
-      path: "{{ dir_name }}"
+      path: "{{ redis_backup_dir_name }}"
       state: directory
 
   - name: Copy backup script
     copy:
-      src: "{{ backup_script }}"
-      dest: "{{ dir_name }}"
+      src: "{{ redis_backup_script.name }}"
+      dest: "{{ redis_backup_dir_name }}"
 
   - name: Download python file from internet to remote machine
     get_url:
-      url: "{{ url }}"
-      dest: "{{ dir_name }}"
+      url: "{{ redis_backup_lib_url }}"
+      dest: "{{ redis_backup_dir_name }}"
 
   - name: Create cron job
     cron:
-      name: "{{ cron_name }}"
-      job: "python3 {{ dir_name }}/{{ backup_script }}"
+      name: "{{ redis_backup_cron_name }}"
+      job: "python3 {{ redis_backup_dir_name }}/{{ redis_backup_script.name }} {{ redis_backup_script.args }}"
       minute: 0
       hour: 0
 
+  - name: Create a symbolic link for log file
+    ansible.builtin.file:
+      src: "{{ redis_backup_dir_name }}/{{ redis_backup_logfile_name }}"
+      dest: "/var/log/{{ redis_backup_logfile_name }}"
+      state: link
+      force: yes
+
   - name: Test if cron job is working
-    shell: "crontab -l | grep {{ cron_name }}"
+    shell: "crontab -l | grep {{ redis_backup_cron_name }}"
