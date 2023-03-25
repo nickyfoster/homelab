@@ -18,7 +18,7 @@ resource "aws_instance" "private_instance" {
   ] : each.value.vpc_security_group_ids
 
 
-    iam_instance_profile = aws_iam_instance_profile.instance_profile[each.key].name
+  iam_instance_profile = aws_iam_instance_profile.instance_profile[each.key].name
 
 
   ebs_optimized = true

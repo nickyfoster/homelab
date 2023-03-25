@@ -1,3 +1,7 @@
+---
+collections:
+  - manala.roles
+
 roles:
   - src: https://github.com/nickyfoster/ansible-docker
     scm: git
@@ -23,3 +27,8 @@ roles:
     scm: git
     version: master
     name: wireguard
+
+  - src: https://github.com/cloudalchemy/ansible-grafana
+    scm: git
+    version: master
+    name: grafana

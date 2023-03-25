@@ -40,12 +40,13 @@
     - name: Restart docker container
       tags: docker_restart
       community.docker.docker_container:
-        name: myapplication
+        name: cointracker
         image: "{{ registry_url }}/{{ image_name }}:{{ image_tag}}"
         state: started
         restart_policy: always
         network_mode: host
         recreate: yes
+        pull: true
         volumes:
           - /opt/cointracker:/etc/cointracker
           - /var/log/cointracker:/application/tracker/logs

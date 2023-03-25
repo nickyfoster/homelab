@@ -10,6 +10,10 @@ variable "default_vpc_id" {
   type = string
 }
 
+variable "private_zone_name" {
+  type = string
+}
+
 variable "versions" {
   type = object({
     ubuntu = string

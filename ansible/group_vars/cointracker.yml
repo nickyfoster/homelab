@@ -3,19 +3,9 @@
 ## Cointracker General
 cointracker_config_path: /opt/cointracker/config.yml
 cointracker_config_dir: /opt/cointracker
-cointracker_do_preload_coin_data: no
-cointracker_preload_coin_data:
-  btc: 1000
 
 ## Cointracker DB
 cointracker_redis_host: ip-172-31-1-57.us-east-2.compute.internal
-cointracker_redis_port: 6379
-cointracker_redis_db: 0
-cointracker_redis_password:
-# TODO encrypt pass ^
-
-## Cointracker CoinmarketcapAPI
-cointracker_coinmarketcap_is_sandbox: no
 
 cointracker_coinmarketcap_api_key: !vault |
           $ANSIBLE_VAULT;1.1;AES256
@@ -35,6 +25,3 @@ cointracker_telegram_api_key: !vault |
           3137386631623530330a353866306366613336326336613735616263343839306238313865343965
           64343962333164646630653761323035316430636133663936306530643563623831313034656232
           6665646638353563303632333336333531373331313864383062
-
-cointracker_telegram_users:
-  - "nickyfostr"

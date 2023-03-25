@@ -1,6 +1,7 @@
 region             = "us-east-2"
 default_vpc_id     = "vpc-67b2050c"
 availability_zones = ["us-east-2a", "us-east-2b"]
+private_zone_name = "mrf0str.internal"
 versions = {
   ubuntu = "jammy"
 }
@@ -65,5 +66,11 @@ private_hosts = [
         effect = "Allow"
       }
     ]
+  },
+  {
+    name = "prometheus"
+  },
+  {
+    name = "grafana"
   }
 ]

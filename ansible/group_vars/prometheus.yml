@@ -1,0 +1,14 @@
+manala_prometheus_config: |
+  global:
+    scrape_interval: 15s
+  scrape_configs:
+    - job_name: cointracker
+      static_configs:
+        - targets:
+            - cointracker.mrf0str.internal:9099
+          labels:
+            instance: "{{ inventory_hostname }}"
+        - targets:
+            - cointracker.mrf0str.internal:8080
+          labels:
+            instance: "cointracker-cadvisor"
