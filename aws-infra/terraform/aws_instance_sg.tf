@@ -2,15 +2,15 @@ resource "aws_security_group" "private_network" {
   name   = "private_network"
   vpc_id = data.aws_vpc.default_vpc.id
 
-  ingress {
-    description = "All connections from bastion SG VPC"
+  # ingress {
+  #   description = "All connections from bastion SG VPC"
 
-    from_port = 0
-    protocol  = "-1"
-    to_port   = 0
+  #   from_port = 0
+  #   protocol  = "-1"
+  #   to_port   = 0
 
-    security_groups = [aws_security_group.bastion.id]
-  }
+  #   security_groups = [aws_security_group.bastion.id]
+  # }
 
   ingress {
     description = "All connections from VPC"

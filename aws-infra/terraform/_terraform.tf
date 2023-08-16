@@ -6,6 +6,7 @@ terraform {
     key            = "default-infra.tfstate"
     region         = "us-east-2"
     dynamodb_table = "terraform-state-lock"
+    profile        = "mrf0str"
   }
 
   required_providers {
